@@ -4,6 +4,10 @@ output: pmanager.o encryption.o
 install: output
 	cp pmanager /usr/bin
 
+dmenu: install
+	chmod +x pmanagerDmenu.sh
+	cp pmanagerDmenu.sh /usr/bin
+
 pmanager.o: pmanager.c
 	gcc -c pmanager.c
 
@@ -14,4 +18,4 @@ clean:
 	rm *.o pmanager
 
 uninstall:
-	rm /usr/bin/pmanager
+	rm /usr/bin/pmanager /usr/bin/pmanagerDmenu.sh
