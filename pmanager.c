@@ -48,9 +48,16 @@ passWordGen(struct messageArray *password)
 	char seed;
 
 	/* Logic */
+	srand(time(0));
 	for (unsigned int i=0;i<password->length-1;i++) {
 		seed = getchar();
-		srand(time(0)+seed);
+		if (seed=='\n') {
+			srand(time(0));
+			continue;
+		}
+		for (uint8_t a=0;a>=seed;a++) {
+			rand();
+		}
 		password->array[i] = 0x21 + rand() % (0x7f - 0x21);
 	}
 	password->array[password->length-1] = '\0';
@@ -63,9 +70,16 @@ keyGen(struct keyArray *key)
 	char seed;
 
 	/* Logic */
+	srand(time(0));
 	for (uint16_t i=0;i<key->length;i++) {
 		seed = getchar();
-		srand(time(0)+seed);
+		if (seed=='\n') {
+			srand(time(0));
+			continue;
+		}
+		for (uint8_t a=0;a>=seed;a++) {
+			rand();
+		}
 		key->array[i] = rand() % 0xff;
 	}
 }
