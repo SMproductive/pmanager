@@ -1,5 +1,8 @@
+CC = gcc
+CFLAGS = -std=c99 -Os
+
 output: pmanager.o encryption.o
-	gcc pmanager.c encryption.c -o pmanager
+	${CC} ${CFLAGS} pmanager.c encryption.c -o pmanager
 
 install: output
 	cp pmanager /usr/bin
@@ -9,10 +12,10 @@ dmenu: install
 	cp pmanagerDmenu.sh /usr/bin
 
 pmanager.o: pmanager.c
-	gcc -c pmanager.c
+	${CC} ${CFLAGS} -c pmanager.c
 
 encryption.o: encryption.c encryption.h
-	gcc -c encryption.c
+	${CC} ${CFLAGS} -c encryption.c
 
 clean:
 	rm *.o pmanager
