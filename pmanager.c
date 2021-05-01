@@ -115,7 +115,7 @@ main(int argc, char *argv[])
 		path = malloc(pathLen*sizeof(*path));
 		strcat(path, getenv("HOME"));
 		strcat(path, "/.pmanager/");
-		mkdir(path, 0600);
+		mkdir(path, 6600);
 		strcat(path, argv[argc-1]);
 
 		keyFile = fopen(keyPath, "r");
