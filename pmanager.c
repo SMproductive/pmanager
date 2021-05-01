@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <termios.h>
 #include <time.h>
 
@@ -114,6 +115,7 @@ main(int argc, char *argv[])
 		path = malloc(pathLen*sizeof(*path));
 		strcat(path, getenv("HOME"));
 		strcat(path, "/.pmanager/");
+		mkdir(path, 0600);
 		strcat(path, argv[argc-1]);
 
 		keyFile = fopen(keyPath, "r");
