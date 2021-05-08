@@ -1,8 +1,10 @@
-CC = gcc
-CFLAGS = -std=c99 -Os
+CC = gcc 
+CFLAGS = -std=c99 -Os 
+EXTERNFLAGS = `pkg-config --cflags gtk4` `libgcrypt-config --cflags`
+LIBS = `libgcrypt-config --libs` `pkg-config --libs gtk4`
 
 output: pmanager.o encryption.o
-	${CC} ${CFLAGS} pmanager.c encryption.c -o pmanager
+	${CC} ${CFLAGS} ${EXTERNFLAGS} ${LIBS} pmanager.c encryption.c -o pmanager
 
 install: output
 	cp pmanager /usr/bin
@@ -12,7 +14,7 @@ dmenu: install
 	cp pmanagerDmenu.sh /usr/bin
 
 pmanager.o: pmanager.c
-	${CC} ${CFLAGS} -c pmanager.c
+	${CC} ${CFLAGS} ${EXTERNFLAGS} ${LIBS} -c pmanager.c
 
 encryption.o: encryption.c encryption.h
 	${CC} ${CFLAGS} -c encryption.c
