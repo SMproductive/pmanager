@@ -8,19 +8,12 @@ Description:
    Blocks are always the half keylength long
    Operating in CBC-mode
    TODO padding with realloc
+   TODO store padding value in two uint_8 instead of uint_16
 */
 #include <stdlib.h>
 #include <stdint.h>
 
 #include "encryption.h"
-
-/* Function declarations */
-void messagePadding(struct messageArray **, uint16_t);
-void reverseMessagePadding(struct messageArray **, uint16_t);
-void blockEnc(uint8_t *, struct keyArray *);
-void blockDec(uint8_t *, struct keyArray *);
-void cbcEnc(struct messageArray **, struct keyArray *);
-void cbcDec(struct messageArray **, struct keyArray *);
 
 /* Variables */
 static const uint8_t sBox[256] =
@@ -169,10 +162,10 @@ messagePadding(struct messageArray **message, uint16_t keyLen)
 	expandedMessage = malloc(sizeof(*expandedMessage));
 	blockLen = keyLen/2;
 	if ((*message)->length%blockLen<=blockLen-2) {
-		expandedMessage->length = (int)((*message)->length/blockLen + 1)
+		expandedMessage->length = (size_t)((*message)->length/blockLen + 1)
 			* blockLen;
 	} else {
-		expandedMessage->length = (int)((*message)->length/blockLen + 2)
+		expandedMessage->length = (size_t)((*message)->length/blockLen + 2)
 		       	* blockLen;
 	}
 	expandedMessage->array = malloc(
@@ -180,7 +173,7 @@ messagePadding(struct messageArray **message, uint16_t keyLen)
 				expandedMessage->array[0]));
 	paddingLenPtr = &expandedMessage->array[0];
 	*paddingLenPtr = expandedMessage->length - (*message)->length;
-	for (unsigned int i=(*message)->length-1;i<(*message)->length;i--) {
+	for (size_t i=(*message)->length-1;i<(*message)->length;i--) {
 		expandedMessage->array[i+*paddingLenPtr] = (*message)->array[i];
 	}
 	free(*message);
@@ -201,7 +194,7 @@ reverseMessagePadding(struct messageArray **expandedMessage, uint16_t keyLen)
 	paddingLenPtr = &(*expandedMessage)->array[0];
 	message->length = (*expandedMessage)->length - *paddingLenPtr;
 	message->array = malloc(message->length*sizeof(message->array[0]));
-	for (unsigned int i=message->length-1;i<message->length;i--) {
+	for (size_t i=message->length-1;i<message->length;i--) {
 		message->array[i] = (*expandedMessage)->array[i+*paddingLenPtr];
 	}
 	free(*expandedMessage);
@@ -252,7 +245,7 @@ void
 cbcEnc(struct messageArray **message, struct keyArray *key)
 {
 	/* Variables */
-	unsigned int block;
+	size_t block;
 	uint16_t blockLen;
 	uint8_t *blockMessage;
 	uint8_t *previousBlockMessage;
@@ -277,7 +270,7 @@ void
 cbcDec(struct messageArray **message, struct keyArray *key)
 {
 	/* Variables */
-	unsigned int block;
+	size_t block;
 	uint16_t blockLen;
 	uint8_t *blockMessage;
 	uint8_t *previousBlockMessage;
