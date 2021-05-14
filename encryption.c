@@ -156,7 +156,7 @@ messagePadding(struct messageArray **message, uint16_t keyLen)
 	/* Variables */
 	struct messageArray *expandedMessage;
 	uint16_t blockLen;
-	uint16_t *paddingLenPtr;
+	uint16_t paddingLen;
 
 	/* Logic */
 	expandedMessage = malloc(sizeof(*expandedMessage));
@@ -171,12 +171,13 @@ messagePadding(struct messageArray **message, uint16_t keyLen)
 	expandedMessage->array = malloc(
 			expandedMessage->length*sizeof(
 				expandedMessage->array[0]));
-	paddingLenPtr = &expandedMessage->array[0];
-	*paddingLenPtr = expandedMessage->length - (*message)->length;
+	paddingLen = expandedMessage->length - (*message)->length;
 	for (size_t i=(*message)->length-1;i<(*message)->length;i--) {
-		expandedMessage->array[i+*paddingLenPtr] = (*message)->array[i];
+		expandedMessage->array[i+paddingLen] = (*message)->array[i];
 	}
 	free(*message);
+	expandedMessage->array[0] = paddingLen%256;
+	expandedMessage->array[1] = (paddingLen-expandedMessage->array[0])/256;
 	*message = expandedMessage;
 }
 
@@ -186,16 +187,16 @@ reverseMessagePadding(struct messageArray **expandedMessage, uint16_t keyLen)
 	/* Variables */
 	struct messageArray *message;
 	uint16_t blockLen;
-	uint16_t *paddingLenPtr;
+	uint16_t paddingLen;
 
 	/* Logic */
 	message = malloc(sizeof(*message));
 	blockLen = keyLen/2;
-	paddingLenPtr = &(*expandedMessage)->array[0];
-	message->length = (*expandedMessage)->length - *paddingLenPtr;
+	paddingLen = (*expandedMessage)->array[0]+(*expandedMessage)->array[1]*256;
+	message->length = (*expandedMessage)->length - paddingLen;
 	message->array = malloc(message->length*sizeof(message->array[0]));
 	for (size_t i=message->length-1;i<message->length;i--) {
-		message->array[i] = (*expandedMessage)->array[i+*paddingLenPtr];
+		message->array[i] = (*expandedMessage)->array[i+paddingLen];
 	}
 	free(*expandedMessage);
 	*expandedMessage = message;

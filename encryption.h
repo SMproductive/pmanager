@@ -1,5 +1,5 @@
 #ifndef ENCRYPTION_H
-#define ENCRYPTION_H
+#define ENCRYPTION_H 1
 /* Structs */
 struct keyArray {
 	uint8_t		*array;
