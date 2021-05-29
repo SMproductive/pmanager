@@ -23,7 +23,6 @@
 static void setKey();
 static void getPassWordShell(char **, size_t *, FILE *);
 static void passWordGen(struct messageArray *);
-static void get();
 
 /* Variables */
 static struct keyArray *key;
