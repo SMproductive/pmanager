@@ -7,12 +7,7 @@ Description:
    Keys can have every length multiple of 2
    Blocks are always the half keylength long
    Operating in CBC-mode
-   TODO padding with realloc
-   TODO store padding value in two uint_8 instead of uint_16
 */
-#include <stdlib.h>
-#include <stdint.h>
-
 #include "encryption.h"
 
 /* Variables */
@@ -159,7 +154,7 @@ messagePadding(struct messageArray **message, uint16_t keyLen)
 	uint16_t paddingLen;
 
 	/* Logic */
-	expandedMessage = malloc(sizeof(*expandedMessage));
+	expandedMessage = calloc(1, sizeof(*expandedMessage));
 	blockLen = keyLen/2;
 	if ((*message)->length%blockLen<=blockLen-2) {
 		expandedMessage->length = (size_t)((*message)->length/blockLen + 1)
@@ -174,6 +169,7 @@ messagePadding(struct messageArray **message, uint16_t keyLen)
 	paddingLen = expandedMessage->length - (*message)->length;
 	for (size_t i=(*message)->length-1;i<(*message)->length;i--) {
 		expandedMessage->array[i+paddingLen] = (*message)->array[i];
+		(*message)->array[i] = 0;
 	}
 	free(*message);
 	expandedMessage->array[0] = paddingLen%256;
@@ -190,13 +186,14 @@ reverseMessagePadding(struct messageArray **expandedMessage, uint16_t keyLen)
 	uint16_t paddingLen;
 
 	/* Logic */
-	message = malloc(sizeof(*message));
+	message = calloc(1, sizeof(*message));
 	blockLen = keyLen/2;
 	paddingLen = (*expandedMessage)->array[0]+(*expandedMessage)->array[1]*256;
 	message->length = (*expandedMessage)->length - paddingLen;
 	message->array = malloc(message->length*sizeof(message->array[0]));
 	for (size_t i=message->length-1;i<message->length;i--) {
 		message->array[i] = (*expandedMessage)->array[i+paddingLen];
+		(*expandedMessage)->array[i+paddingLen] = 0;
 	}
 	free(*expandedMessage);
 	*expandedMessage = message;
