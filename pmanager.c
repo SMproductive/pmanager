@@ -1,5 +1,5 @@
 /*
-   Sat 29 May 2021 03:24:44 PM CEST
+   Sat 29 May 2021 04:30:46 PM CEST
    Developed by Maximilian Strele
 
    Description
@@ -19,14 +19,19 @@
 
 #include "encryption.h"
 
-/* Function declarations */
 static void setKey();
 static void getPassWordShell(char **, size_t *, FILE *);
 static void passWordGen(struct messageArray *);
+static void clipHandling();
 static void guiActivate();
 
 /* Variables */
 GtkApplication *app;
+GtkWidget *window;
+GtkWidget *grid;
+GtkWidget *label;
+GtkWidget *buffer;
+GtkWidget *entry;
 static struct keyArray *key;
 static struct messageArray *password;
 static FILE *file;
@@ -87,15 +92,24 @@ passWordGen(struct messageArray *password)
 }
 
 void
+clipHandling()
+{
+	masterPassword = gtk_entry_buffer_get_text(buffer);
+	setKey();
+	g_print("%s ", masterPassword);
+	g_print("\n%s ", key->array);
+	g_print("\n%s ", path);
+	file = fopen(path, "r");
+	password->length = getline((char**)&password->array, &password->length, file);
+	g_print("\n%d ", password->length);
+	cbcDec(&password, key);
+
+
+}
+
+void
 guiActivate()
 {
-	/* Variables */
-	GtkWidget *window;
-	GtkWidget *grid;
-	GtkWidget *label;
-	GtkWidget *entry;
-	GtkWidget *buffer;
-
 	/* Logic */
 	window = gtk_application_window_new(app);
 	grid = gtk_grid_new();
@@ -103,15 +117,16 @@ guiActivate()
 	entry = gtk_entry_new();
 	buffer = gtk_entry_buffer_new(NULL, 0);
 
+	gtk_entry_set_visibility(GTK_ENTRY (entry), false);
 	gtk_entry_set_buffer(entry, buffer);
-	gtk_entry_set_visibility(entry, false);
+	g_signal_connect(entry, "activate", G_CALLBACK (clipHandling), NULL);
 
 	gtk_window_set_title(GTK_WINDOW (window), "pmanager");
-	gtk_window_set_default_size (GTK_WINDOW (window), 200, 200);
+	gtk_window_set_default_size(GTK_WINDOW (window), 200, 200);
 	gtk_window_set_child(GTK_WINDOW (window), grid);
 
-	gtk_grid_attach(grid, label, 1, 1, 1, 1);
-	gtk_grid_attach(grid, entry, 1, 2, 1, 1);
+	gtk_grid_attach(GTK_GRID (grid), label, 1, 1, 1, 1);
+	gtk_grid_attach(GTK_GRID (grid), entry, 1, 2, 1, 1);
 
 	gtk_widget_show(window);
 
