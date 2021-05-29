@@ -1,6 +1,5 @@
-
 /*
-   Sat 08 May 2021 09:01:33 AM CEST
+   Sat 29 May 2021 03:24:44 PM CEST
    Developed by Maximilian Strele
 
    Description
@@ -10,6 +9,7 @@
 
 #include <errno.h>
 #include <gcrypt.h>
+#include <gtk/gtk.h>
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -23,8 +23,10 @@
 static void setKey();
 static void getPassWordShell(char **, size_t *, FILE *);
 static void passWordGen(struct messageArray *);
+static void guiActivate();
 
 /* Variables */
+GtkApplication *app;
 static struct keyArray *key;
 static struct messageArray *password;
 static FILE *file;
@@ -84,6 +86,37 @@ passWordGen(struct messageArray *password)
 	password->array[password->length-1] = '\0';
 }
 
+void
+guiActivate()
+{
+	/* Variables */
+	GtkWidget *window;
+	GtkWidget *grid;
+	GtkWidget *label;
+	GtkWidget *entry;
+	GtkWidget *buffer;
+
+	/* Logic */
+	window = gtk_application_window_new(app);
+	grid = gtk_grid_new();
+	label = gtk_label_new("password: ");
+	entry = gtk_entry_new();
+	buffer = gtk_entry_buffer_new(NULL, 0);
+
+	gtk_entry_set_buffer(entry, buffer);
+	gtk_entry_set_visibility(entry, false);
+
+	gtk_window_set_title(GTK_WINDOW (window), "pmanager");
+	gtk_window_set_default_size (GTK_WINDOW (window), 200, 200);
+	gtk_window_set_child(GTK_WINDOW (window), grid);
+
+	gtk_grid_attach(grid, label, 1, 1, 1, 1);
+	gtk_grid_attach(grid, entry, 1, 2, 1, 1);
+
+	gtk_widget_show(window);
+
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -137,7 +170,7 @@ main(int argc, char *argv[])
 		password->length = strtol(argv[2], NULL, 10)+1;
 		password->array = malloc(
 				password->length*sizeof(password->array[0]));
-		printf("seed (length=passwordlength): ");
+		printf("\nseed (length=passwordlength): ");
 		passWordGen(password);
 		cbcEnc(&password, key);
 		file = fopen(path, "w");
@@ -151,7 +184,10 @@ main(int argc, char *argv[])
 		fclose(file);
 
 	} else if (strcmp(argv[1],"-get")==0) {
-		printf("masterPassword: ");
+		app = gtk_application_new("pmanager.gui", G_APPLICATION_FLAGS_NONE);
+		g_signal_connect(app, "activate", G_CALLBACK (guiActivate), NULL);
+		g_application_run(G_APPLICATION (app), 0, NULL);
+/*		printf("masterPassword: ");
 		getPassWordShell(&masterPassword, &tempLen, stdin);
 		setKey();
 		file = fopen(path, "r");
@@ -165,7 +201,7 @@ main(int argc, char *argv[])
 		for (size_t i=0;i<password->length;i++) {
 			printf("%c", password->array[i]);
 		}
-
+*/
 	} else {
 		printf("\nWrong argument!");
 		exit(0);
