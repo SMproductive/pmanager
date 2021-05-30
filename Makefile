@@ -8,6 +8,8 @@ output: pmanager.o encryption.o
 
 install: output
 	cp pmanager /usr/bin
+	chmod 755 /usr/bin/pmanager
+	cp pmanager.1 /usr/local/share/man/man1/
 
 pmanager.o: pmanager.c
 	${CC} ${CFLAGS} ${EXTERNFLAGS} ${LIBS} -c pmanager.c
@@ -16,7 +18,7 @@ encryption.o: encryption.c encryption.h
 	${CC} ${CFLAGS} -c encryption.c
 
 dmenu: install
-	chmod +x pmanagerDmenu.sh
+	chmod 755 pmanagerDmenu.sh
 	cp pmanagerDmenu.sh /usr/bin
 
 clean:

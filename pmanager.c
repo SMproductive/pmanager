@@ -151,7 +151,7 @@ guiActivate()
 	/* Logic */
 	window = gtk_application_window_new(app);
 	grid = gtk_grid_new();
-	label = gtk_label_new("password: ");
+	label = gtk_label_new("masterPassword: ");
 	entry = gtk_entry_new();
 	buffer = gtk_entry_buffer_new(NULL, 0);
 

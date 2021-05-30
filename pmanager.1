@@ -1,0 +1,63 @@
+.TH PMANAGER "1" "May 2021"
+.SH NAME
+pmanager \- password manager
+.SH SYNOPSIS
+.B pmanager
+.RB [ \-get ]
+.RB [ \-set ]
+.RB [ \-gen
+.IR LENGTH ]
+.IR ACCOUNT
+
+.SH DESCRIPTION
+.B pmanager
+stores and encrypts passwords. To encrypt and decrypt there needs to be provided a so called
+.IR masterPassword .
+Each encrypted password is stored in a single file called
+.IR $HOME/.pmanager/ACCOUNT .
+The program could possibly be used as an encryption function but its intended use is to be a passwordmanager.
+
+.SH OPTIONS
+.TP
+.B \-get
+gets the password of the specified
+.IR ACCOUNT
+and stores it into the clipboard for 10 seconds.
+.TP
+.B \-set
+stores a password for the specified
+.IR ACCOUNT .
+.TP
+.BI \-gen " LENGTH"
+generates a random password of the specified
+.I LENGTH
+for a specified
+.IR ACCOUNT .
+During runtime there is a seed needed, which must have the same
+.I LENGTH
+as the required random password.
+
+.SH USEFUL EXAMPLE
+.B ls $HOME/.pmanager |dmenu |xargs pmanager \-get
+.P
+With that you can select your
+.I ACCOUNT
+with
+.IR dmenu .
+There will appear a window which asks for your
+.IR masterPassword .
+After entering it you have 10 seconds to paste the password of the selected
+.IR ACCOUNT .
+
+.SH AUTHOR
+Maximilan Strele
+
+.SH LICENSE
+This is free software under the GNU GPL version 3 or later: you are free to change and redistribute it. There is NO WARRANTY, to the extent permitted by law. For more information see the LICENSE file.
+
+.SH SEE ALSO
+.BR dmenu (1),
+.BR xargs (1)
+
+.SH BUGS
+See the README file in the distribution.
