@@ -9,10 +9,6 @@ output: pmanager.o encryption.o
 install: output
 	cp pmanager /usr/bin
 
-dmenu: install
-	chmod +x pmanagerDmenu.sh
-	cp pmanagerDmenu.sh /usr/bin
-
 pmanager.o: pmanager.c
 	${CC} ${CFLAGS} ${EXTERNFLAGS} ${LIBS} -c pmanager.c
 
