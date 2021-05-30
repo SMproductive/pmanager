@@ -15,6 +15,10 @@ pmanager.o: pmanager.c
 encryption.o: encryption.c encryption.h
 	${CC} ${CFLAGS} -c encryption.c
 
+dmenu: install
+	chmod +x pmanagerDmenu.sh
+	cp pmanagerDmenu.sh /usr/bin
+
 clean:
 	rm *.o pmanager
 
