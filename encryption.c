@@ -1,6 +1,7 @@
 /*
    Sun 30 May 2021 08:41:06 AM CEST
    Developed by Maximilian Strele
+   For copyright see LICENSE file
 
 Description:
    Encryption algorithm using Rijndael S-box
