@@ -142,7 +142,7 @@ clipHandling()
 	clip = gdk_display_get_clipboard(display);
 	gdk_clipboard_set_text(clip, password->array);
 	gtk_widget_hide(window);
-	pthread_create(&thread, NULL, guiLifeTimer, NULL);
+	pthread_create(&thread, NULL, guiLifeTimer, NULL); /* exits the program after specific time */
 }
 
 void
@@ -202,7 +202,6 @@ main(int argc, char *argv[])
 		printf("\npassword ('str'): ");
 		getPassWordShell((char**)&password->array, &password->length, stdin);
 		cbcEnc(&password, key);
-		printf("\nlength: %d", password->length);
 		file = fopen(path, "w");
 		if (file==NULL) {
 			fprintf(stderr, "Permission denied!\nexit code: %d\n", errno);
@@ -242,21 +241,7 @@ main(int argc, char *argv[])
 		g_signal_connect(app, "activate", G_CALLBACK (guiActivate), NULL);
 		g_application_run(G_APPLICATION (app), 0, NULL);
 		g_object_unref(app);
-/*		printf("masterPassword: ");
-		getPassWordShell(&masterPassword, &tempLen, stdin);
-		setKey();
-		file = fopen(path, "r");
-		if (file==NULL) {
-			fprintf(stderr, "Permission denied or file does not exist!\nexit code: %d\n", errno);
-			exit(EXIT_FAILURE);
-		}
-		password->length = getline((char**)&password->array, &password->length, file);
-		fclose(file);
-		cbcDec(&password, key);
-		for (size_t i=0;i<password->length;i++) {
-			printf("%c", password->array[i]);
-		}
-*/
+
 	} else {
 		printf("\nWrong argument!");
 		exit(0);
