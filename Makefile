@@ -1,3 +1,4 @@
+#for copyright see LICENSE file!
 CC = gcc 
 CFLAGS = -std=c99 -Os 
 EXTERNFLAGS = `pkg-config --cflags gtk4` `libgcrypt-config --cflags`
