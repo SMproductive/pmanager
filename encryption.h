@@ -1,3 +1,4 @@
+/* For copyright see LICENSE file */
 #ifndef ENCRYPTION_H
 #define ENCRYPTION_H 1
 #include <stdint.h>
