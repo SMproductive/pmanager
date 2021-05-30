@@ -1,6 +1,7 @@
 /*
    Sun 30 May 2021 08:40:41 AM CEST
    Developed by Maximilian Strele
+   For copyright see LICENSE file
 
    Description
    Passwordmanager using it's own encryption algorithm
