@@ -229,7 +229,7 @@ main(int argc, char *argv[])
 		cbcEnc(&password, key);
 		file = fopen(path, "w");
 		if (file==NULL) {
-			fprintf(stderr, "Permission denied!\nexit code: %d\n", errno);
+			fprintf(stderr, "Permission denied or name too long!\nexit code: %d\n", errno);
 			exit(EXIT_FAILURE);
 		}
 		for (size_t i=0;i<password->length;i++) {
